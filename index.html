@@ -50,20 +50,6 @@
     <h2>Submit a Grievance 🌹</h2>
     <input type="text" placeholder="Title" id="title" />
     <textarea placeholder="What's bothering you?" id="message"></textarea>
-    <label> Mood:
-      <select>
-        <option>😡</option>
-        <option>😢</option>
-        <option>😐</option>
-      </select>
-    </label>
-    <label> Severity:
-      <select>
-        <option>A chunky kitkat would fix this 😈</option>
-        <option>We need to talk 🚨</option>
-        <option>This is DEFCON 1 🔥</option>
-      </select>
-    </label>
     <button onclick="submitGrievance()">Submit 💌</button>
   </div>
 
@@ -76,8 +62,21 @@
 
   <script>
     function submitGrievance() {
-      document.getElementById("formContainer").style.display = "none";
-      document.getElementById("thankYouMessage").style.display = "block";
+      const title = document.getElementById("title").value;
+      const message = document.getElementById("message").value;
+
+      fetch("https://sheetdb.io/api/v1/5o1tnufem6odo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          data: [{ title, message }]
+        })
+      }).then(res => res.json()).then(data => {
+        document.getElementById("formContainer").style.display = "none";
+        document.getElementById("thankYouMessage").style.display = "block";
+      });
     }
     function goBack() {
       document.getElementById("formContainer").style.display = "block";
