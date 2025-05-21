@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +49,17 @@
     <h2>Kritika Submit a Grievance 🌹</h2>
     <input type="text" placeholder="Title" id="title" />
     <textarea placeholder="What's bothering you?" id="message"></textarea>
+
+    <!-- Mood dropdown -->
+    <label for="mood">Mood:</label>
+    <select id="mood" name="mood" required>
+      <option value="😊 Happy">😊 Happy</option>
+      <option value="😢 Sad">😢 Sad</option>
+      <option value="🤗 Excited">🤗 Excited</option>
+      <option value="😡 Angry">😡 Angry</option>
+      <option value="😞 Disappointed">😞 Disappointed</option>
+    </select>
+
     <button onclick="submitGrievance()">Submit 💌</button>
   </div>
 
@@ -64,6 +74,7 @@
     function submitGrievance() {
       const title = document.getElementById("title").value;
       const message = document.getElementById("message").value;
+      const mood = document.getElementById("mood").value;
 
       fetch("https://sheetdb.io/api/v1/5o1tnufem6odo", {
         method: "POST",
@@ -71,13 +82,14 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          data: [{ title, message }]
+          data: [{ title, message, mood }]
         })
       }).then(res => res.json()).then(data => {
         document.getElementById("formContainer").style.display = "none";
         document.getElementById("thankYouMessage").style.display = "block";
       });
     }
+
     function goBack() {
       document.getElementById("formContainer").style.display = "block";
       document.getElementById("thankYouMessage").style.display = "none";
