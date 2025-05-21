@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grievance for Kritika</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #ffe6f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      background-color: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    .thankyou {
+      display: none;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="formContainer">
+    <h2>Submit a Grievance 🌹</h2>
+    <input type="text" placeholder="Title" id="title" />
+    <textarea placeholder="What's bothering you?" id="message"></textarea>
+    <label> Mood:
+      <select>
+        <option>😡</option>
+        <option>😢</option>
+        <option>😐</option>
+      </select>
+    </label>
+    <label> Severity:
+      <select>
+        <option>A chunky kitkat would fix this 😈</option>
+        <option>We need to talk 🚨</option>
+        <option>This is DEFCON 1 🔥</option>
+      </select>
+    </label>
+    <button onclick="submitGrievance()">Submit 💌</button>
+  </div>
+
+  <div class="container thankyou" id="thankYouMessage">
+    <h2>Thank you, Kritika 💖</h2>
+    <p>Your grievance has been sent to Gautam 💌<br>
+    He will get back to you very soon!<br>(He will think about it)</p>
+    <button onclick="goBack()">Submit Another</button>
+  </div>
+
+  <script>
+    function submitGrievance() {
+      document.getElementById("formContainer").style.display = "none";
+      document.getElementById("thankYouMessage").style.display = "block";
+    }
+    function goBack() {
+      document.getElementById("formContainer").style.display = "block";
+      document.getElementById("thankYouMessage").style.display = "none";
+    }
+  </script>
+</body>
+</html>
