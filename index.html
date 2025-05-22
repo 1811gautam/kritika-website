@@ -11,7 +11,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       height: 100vh;
       margin: 0;
       overflow: hidden;
@@ -45,67 +44,103 @@
       font-size: 18px;
       color: #333;
     }
-    .typewriter {
-      font-size: 16px;
-      margin-bottom: 10px;
-      min-height: 24px;
-    }
-    #moodMessage {
+    .quote {
+      margin-top: 15px;
+      font-style: italic;
       font-size: 14px;
-      margin-top: 5px;
+      color: #888;
+    }
+    .mood-response {
+      margin-top: 10px;
+      font-size: 14px;
       color: #555;
     }
-    .quote {
+    .loader {
+      display: none;
       margin-top: 20px;
-      font-style: italic;
-      color: #777;
-      font-size: 14px;
+      justify-content: center;
+      align-items: center;
+    }
+    .heart {
+      width: 50px;
+      height: 50px;
+      background: hotpink;
+      position: relative;
+      transform: rotate(45deg);
+      animation: pulse 1s infinite;
+    }
+    .heart::before, .heart::after {
+      content: "";
+      width: 50px;
+      height: 50px;
+      background: hotpink;
+      border-radius: 50%;
+      position: absolute;
+    }
+    .heart::before {
+      top: -25px;
+      left: 0;
+    }
+    .heart::after {
+      left: -25px;
+      top: 0;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1) rotate(45deg); }
+      50% { transform: scale(1.1) rotate(45deg); }
+      100% { transform: scale(1) rotate(45deg); }
+    }
+
+    /* Rose animation */
+    .rose {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      animation: fall 5s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-50px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    .welcome {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
     .pledge {
       margin-top: 20px;
-      background: #fff0f6;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-    .rose {
-      position: fixed;
-      top: -50px;
-      font-size: 24px;
-      animation: fall linear;
-    }
-    @keyframes fall {
-      0% { top: -50px; opacity: 1; }
-      100% { top: 100vh; opacity: 0; }
+      font-size: 13px;
+      color: #444;
+      border-top: 1px dashed #ccc;
+      padding-top: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- Cute Animated GIF -->
-  <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" style="width: 100px; height: 100px;" alt="Cute"/>
-
-  <div class="typewriter" id="typewriterText"></div>
-
   <div class="container" id="formContainer">
+    <div class="welcome" id="welcomeMessage">Hi Kritika 👋</div>
+    <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" style="width: 100px; height: 100px;" alt="Cute"/>
     <h2>Kritika Submit a Grievance 🌹</h2>
     <input type="text" placeholder="Title" id="title" />
     <textarea placeholder="What's bothering you?" id="message"></textarea>
-
     <label for="mood">Mood:</label>
-    <select id="mood" name="mood" required onchange="showMoodMessage()">
-      <option value="">Select Mood</option>
+    <select id="mood" name="mood" required>
       <option value="😊 Happy">😊 Happy</option>
       <option value="😢 Sad">😢 Sad</option>
       <option value="🤗 Excited">🤗 Excited</option>
       <option value="😡 Angry">😡 Angry</option>
       <option value="😞 Disappointed">😞 Disappointed</option>
     </select>
-    <div id="moodMessage"></div>
-
+    <div class="mood-response" id="moodResponse"></div>
     <button onclick="submitGrievance()">Submit 💌</button>
-    <div class="quote" id="quoteDisplay"></div>
+    <div class="loader" id="loader">
+      <div class="heart"></div>
+    </div>
+    <div class="quote" id="quoteBox"></div>
     <div class="pledge">
-      📝 “I, Gautam, promise to listen to every grievance with my full heart and respond with kindness, snacks, and memes.”<br><br>
+      📝 I, Gautam, promise to listen to every grievance with my full heart and respond with kindness, snacks, and memes.<br>
       — Gautam 💖
     </div>
   </div>
@@ -117,37 +152,12 @@
     <button onclick="goBack()">Submit Another</button>
   </div>
 
-  <!-- Sound -->
-  <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3" preload="auto"></audio>
+  <!-- Falling roses container -->
+  <div id="roseContainer"></div>
+
+  <audio id="ding" src="https://www.fesliyanstudios.com/play-mp3/6679" preload="auto"></audio>
 
   <script>
-    const messages = [
-      "Hi Kritika 👋, tell Gautam what’s on your heart today 💌",
-      "Gautam is listening with full love 💖",
-      "Write it down… your feelings matter 🌷",
-      "Even the small things count 🌸",
-    ];
-    let msgIndex = 0;
-    const typewriter = document.getElementById("typewriterText");
-
-    function typeMessage() {
-      let text = messages[msgIndex];
-      let i = 0;
-      typewriter.innerHTML = "";
-      const interval = setInterval(() => {
-        typewriter.innerHTML += text.charAt(i);
-        i++;
-        if (i > text.length) {
-          clearInterval(interval);
-          setTimeout(() => {
-            msgIndex = (msgIndex + 1) % messages.length;
-            typeMessage();
-          }, 2000);
-        }
-      }, 60);
-    }
-    typeMessage();
-
     const moodMessage = {
       "😊 Happy": "Yay! I'm so happy you're happy 😄",
       "😢 Sad": "Aww, sending hugs 🤗",
@@ -155,42 +165,50 @@
       "😡 Angry": "Tell me everything 😤 I’ll fix it!",
       "🤗 Excited": "I’m excited with you! 🎉"
     };
-    function showMoodMessage() {
-      const mood = document.getElementById("mood").value;
-      document.getElementById("moodMessage").innerText = moodMessage[mood] || "";
-    }
 
     const quotes = [
       "💌 Love is not about how many days, months, or years... it's about how much you love each day.",
-      "💖 You are my favorite notification every day.",
-      "🌸 The little things you do mean the world to me.",
-      "🌹 I’m lucky to have your complaints — it means I matter to you.",
+      "💖 In your smile, I see something more beautiful than stars.",
+      "🌸 Every moment with you is a memory I cherish.",
+      "💕 You are the sunshine in my rainy days.",
+      "💫 Just like the moon, I’ll be with you through all phases."
     ];
-    document.getElementById("quoteDisplay").innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+    const welcomeLines = [
+      "Hi Kritika 👋, tell Gautam what’s on your heart today 💌",
+      "Sweet Kritika 🌷, I’m all ears!",
+      "Kritika 💖, how can I brighten your day?",
+      "Hey angel 😇, what's going on in that mind of yours?"
+    ];
+
+    let index = 0;
+    function typeWriter(text, i, fnCallback) {
+      if (i < text.length) {
+        document.getElementById("welcomeMessage").innerHTML = text.substring(0, i+1);
+        setTimeout(() => typeWriter(text, i + 1, fnCallback), 50);
+      } else if (typeof fnCallback === 'function') {
+        setTimeout(fnCallback, 2000);
+      }
+    }
+
+    function startTypingAnimation() {
+      typeWriter(welcomeLines[index % welcomeLines.length], 0, () => {
+        index++;
+        startTypingAnimation();
+      });
+    }
+
+    document.getElementById("mood").addEventListener("change", function () {
+      const mood = this.value;
+      document.getElementById("moodResponse").textContent = moodMessage[mood] || "";
+    });
 
     function submitGrievance() {
       const title = document.getElementById("title").value;
       const message = document.getElementById("message").value;
       const mood = document.getElementById("mood").value;
 
-      if (!title || !message || !mood) {
-        alert("Please fill in all fields!");
-        return;
-      }
-
-      // Sound effect
-      document.getElementById("popSound").play();
-
-      // Rose rain
-      for (let i = 0; i < 15; i++) {
-        const rose = document.createElement("div");
-        rose.className = "rose";
-        rose.innerText = "🌹";
-        rose.style.left = Math.random() * 100 + "vw";
-        rose.style.animationDuration = (Math.random() * 2 + 2) + "s";
-        document.body.appendChild(rose);
-        setTimeout(() => rose.remove(), 4000);
-      }
+      document.getElementById("loader").style.display = "flex";
 
       fetch("https://sheetdb.io/api/v1/5o1tnufem6odo", {
         method: "POST",
@@ -201,8 +219,11 @@
           data: [{ title, message, mood }]
         })
       }).then(res => res.json()).then(data => {
+        document.getElementById("loader").style.display = "none";
         document.getElementById("formContainer").style.display = "none";
         document.getElementById("thankYouMessage").style.display = "block";
+        document.getElementById("ding").play();
+        rainRoses();
       });
     }
 
@@ -210,6 +231,25 @@
       document.getElementById("formContainer").style.display = "block";
       document.getElementById("thankYouMessage").style.display = "none";
     }
+
+    function rainRoses() {
+      for (let i = 0; i < 20; i++) {
+        const rose = document.createElement("div");
+        rose.className = "rose";
+        rose.style.left = Math.random() * 100 + "vw";
+        rose.style.animationDelay = Math.random() * 2 + "s";
+        rose.textContent = "🌹";
+        document.body.appendChild(rose);
+
+        setTimeout(() => {
+          rose.remove();
+        }, 5000);
+      }
+    }
+
+    // Initial setup
+    document.getElementById("quoteBox").textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    startTypingAnimation();
   </script>
 </body>
 </html>
