@@ -15,6 +15,7 @@
       margin: 0;
       overflow: hidden;
     }
+
     .container {
       background-color: white;
       padding: 30px;
@@ -24,6 +25,7 @@
       text-align: center;
       position: relative;
     }
+
     input, textarea, select, button {
       width: 100%;
       margin-top: 10px;
@@ -32,35 +34,46 @@
       border: 1px solid #ccc;
       font-size: 14px;
     }
+
     button {
       background-color: hotpink;
       color: white;
       font-weight: bold;
       cursor: pointer;
       border: none;
+      transition: background 0.3s;
     }
+
+    button:hover {
+      background-color: deeppink;
+    }
+
     .thankyou {
       display: none;
       font-size: 18px;
       color: #333;
     }
+
     .quote {
       margin-top: 15px;
       font-style: italic;
       font-size: 14px;
       color: #888;
     }
+
     .mood-response {
       margin-top: 10px;
       font-size: 14px;
       color: #555;
     }
+
     .loader {
       display: none;
       margin-top: 20px;
       justify-content: center;
       align-items: center;
     }
+
     .heart {
       width: 50px;
       height: 50px;
@@ -69,6 +82,7 @@
       transform: rotate(45deg);
       animation: pulse 1s infinite;
     }
+
     .heart::before, .heart::after {
       content: "";
       width: 50px;
@@ -77,18 +91,20 @@
       border-radius: 50%;
       position: absolute;
     }
+
     .heart::before {
       top: -25px;
       left: 0;
     }
+
     .heart::after {
       left: -25px;
       top: 0;
     }
+
     @keyframes pulse {
-      0% { transform: scale(1) rotate(45deg); }
+      0%, 100% { transform: scale(1) rotate(45deg); }
       50% { transform: scale(1.1) rotate(45deg); }
-      100% { transform: scale(1) rotate(45deg); }
     }
 
     /* Rose animation */
@@ -96,9 +112,10 @@
       position: absolute;
       top: -50px;
       font-size: 24px;
-      animation: fall 5s linear infinite;
+      animation: fall 5s linear forwards;
       pointer-events: none;
     }
+
     @keyframes fall {
       0% { transform: translateY(-50px); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
@@ -108,13 +125,21 @@
       font-weight: bold;
       font-size: 18px;
       margin-bottom: 10px;
+      min-height: 24px;
     }
+
     .pledge {
       margin-top: 20px;
       font-size: 13px;
       color: #444;
       border-top: 1px dashed #ccc;
       padding-top: 10px;
+    }
+
+    @media (max-width: 360px) {
+      .container {
+        width: 90%;
+      }
     }
   </style>
 </head>
@@ -123,8 +148,10 @@
     <div class="welcome" id="welcomeMessage">Hi Kritika 👋</div>
     <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" style="width: 100px; height: 100px;" alt="Cute"/>
     <h2>Kritika Submit a Grievance 🌹</h2>
+
     <input type="text" placeholder="Title" id="title" />
     <textarea placeholder="What's bothering you?" id="message"></textarea>
+
     <label for="mood">Mood:</label>
     <select id="mood" name="mood" required>
       <option value="😊 Happy">😊 Happy</option>
@@ -133,12 +160,17 @@
       <option value="😡 Angry">😡 Angry</option>
       <option value="😞 Disappointed">😞 Disappointed</option>
     </select>
+
     <div class="mood-response" id="moodResponse"></div>
+
     <button onclick="submitGrievance()">Submit 💌</button>
+
     <div class="loader" id="loader">
       <div class="heart"></div>
     </div>
+
     <div class="quote" id="quoteBox"></div>
+
     <div class="pledge">
       📝 I, Gautam, promise to listen to every grievance with my full heart and respond with kindness, snacks, and memes.<br>
       — Gautam 💖
@@ -152,9 +184,7 @@
     <button onclick="goBack()">Submit Another</button>
   </div>
 
-  <!-- Falling roses container -->
   <div id="roseContainer"></div>
-
   <audio id="ding" src="https://www.fesliyanstudios.com/play-mp3/6679" preload="auto"></audio>
 
   <script>
@@ -177,11 +207,12 @@
     const welcomeLines = [
       "Hi Kritika 👋, tell Gautam what’s on your heart today 💌",
       "My princess 🌷, I’m all ears!",
-      "princess 💖, how can I brighten your day?",
+      "Princess 💖, how can I brighten your day?",
       "Hey princess 💖, what's going on in that mind of yours?"
     ];
 
     let index = 0;
+
     function typeWriter(text, i, fnCallback) {
       if (i < text.length) {
         document.getElementById("welcomeMessage").innerHTML = text.substring(0, i+1);
@@ -204,21 +235,24 @@
     });
 
     function submitGrievance() {
-      const title = document.getElementById("title").value;
-      const message = document.getElementById("message").value;
+      const title = document.getElementById("title").value.trim();
+      const message = document.getElementById("message").value.trim();
       const mood = document.getElementById("mood").value;
+
+      if (!title || !message) {
+        alert("Please fill in both the title and the message.");
+        return;
+      }
 
       document.getElementById("loader").style.display = "flex";
 
       fetch("https://sheetdb.io/api/v1/5o1tnufem6odo", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          data: [{ title, message, mood }]
-        })
-      }).then(res => res.json()).then(data => {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [{ title, message, mood }] })
+      })
+      .then(res => res.json())
+      .then(() => {
         document.getElementById("loader").style.display = "none";
         document.getElementById("formContainer").style.display = "none";
         document.getElementById("thankYouMessage").style.display = "block";
@@ -241,9 +275,7 @@
         rose.textContent = "🌹";
         document.body.appendChild(rose);
 
-        setTimeout(() => {
-          rose.remove();
-        }, 5000);
+        setTimeout(() => rose.remove(), 5000);
       }
     }
 
